@@ -1,6 +1,8 @@
 #!python3
 """
 >>> import solution
+>>> solution.calc_fuel(5)
+0
 >>> solution.calc_fuel(12)
 2
 >>> solution.calc_fuel(14)
@@ -14,7 +16,7 @@
 import sys
 
 def calc_fuel( mass ):
-    return mass // 3 - 2
+    return max(0,mass // 3 - 2)
 
 if __name__ == "__main__":  
     with open( 'modules.txt', 'r') as f:
