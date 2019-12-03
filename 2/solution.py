@@ -73,10 +73,14 @@ def execute( tape ):
         op, jmp = OPCODES[memory[pc]]
     return memory 
 
-if __name__ == "__main__":
-    memory=load_tape( PROGRAM_TAPE )
-    memory[1]=12
-    memory[2]=2
+def execute_prog_with_noun_and_verb( tape, noun, verb ):
+    memory=load_tape( tape )
+    memory[1]=noun
+    memory[2]=verb
     memory=execute( memory )
-    print( memory[0] )
+    return memory[0]
+
+    
+if __name__ == "__main__":
+    print( execute_prog_with_noun_and_verb( PROGRAM_TAPE, 12, 2 ) )
 
