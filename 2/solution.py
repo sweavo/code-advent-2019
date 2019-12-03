@@ -80,7 +80,14 @@ def execute_prog_with_noun_and_verb( tape, noun, verb ):
     memory=execute( memory )
     return memory[0]
 
+def part_2( tape ):
+    for noun in range(100):
+        for verb in range(100):
+            result = execute_prog_with_noun_and_verb( PROGRAM_TAPE, noun, verb )
+            if result == 19690720:
+                return (noun,verb)
     
 if __name__ == "__main__":
     print( execute_prog_with_noun_and_verb( PROGRAM_TAPE, 12, 2 ) )
+    print( part_2( PROGRAM_TAPE ) )
 
