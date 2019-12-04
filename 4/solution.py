@@ -8,6 +8,12 @@ def remainder( first, digits ):
         else:
             yield str(head)
 
+def has_double_part_1( digits ):
+    for i in range(len(digits)-1):
+        if digits[i] == digits[i+1]:
+            return True
+    return False
+
 def has_double( digits ):
     """
     >>> has_double( '11' )
@@ -41,12 +47,15 @@ def has_double( digits ):
 
 if __name__ == "__main__":
     count=0
+    count2=0
     for combo in remainder( 0, 6 ):
         if int(combo) >= 616492:
-            print (f'Count={count}')
+            print (f'Count={count}\nPart2={count2}')
             exit()
         
         print ( combo )
-        if int(combo) >= 145852 and has_double(combo):
+        if int(combo) >= 145852 and has_double_part_1(combo):
             count = count + 1
+        if int(combo) >= 145852 and has_double(combo):
+            count2 = count2 + 1
 
