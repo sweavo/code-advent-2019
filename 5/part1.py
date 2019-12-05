@@ -20,7 +20,6 @@ def print_tape( d ):
     """
     addresses = range(max(d.keys())+1)
     return ','.join([ str(d.get(k,0)) for k in addresses])
-        
 
 def binop( op, memory, pc, istream=None, ostream=None ):
     """
@@ -92,6 +91,27 @@ def execute( tape, istream=None, ostream=None ):
         op, jmp = OPCODES[memory[pc]]
     return memory 
 
+def get_parameter_mode( opcode, index ):
+    """
+    opcode is the whole value read from memory (i.e. rightmost 2 digits are
+    the instruction, digits to the left are parameter modes).
+    index is the index of the parameter starting to the left of the 
+    instruction.  index is right to left in the opcode, left to right in 
+    memory
+    >>> get_parameter_mode( 100, 0 )
+    1
+    >>> get_parameter_mode( 100, 2 )
+    0
+    >>> get_parameter_mode( 1099, 0 )
+    0
+    >>> get_parameter_mode( 1099, 1 )
+    1
+    >>> get_parameter_mode( 1099, 2 )
+    0
+    """
+    opcode_as_string=f'{opcode:010}'
+    return int(opcode_as_string[-(3+index)])
+ 
 def execute_prog_with_noun_and_verb( tape, noun, verb ):
     memory=load_tape( tape )
     memory[1]=noun
