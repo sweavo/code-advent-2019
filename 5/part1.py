@@ -22,7 +22,7 @@ def print_tape( d ):
     return ','.join([ str(d.get(k,0)) for k in addresses])
         
 
-def binop( op, memory, pc ):
+def binop( op, memory, pc, istream=None, ostream=None ):
     """
     >>> print_tape( binop( operator.add, load_tape('1,0,0,3'),0 ) )
     '1,0,0,2'
@@ -41,14 +41,24 @@ def binop( op, memory, pc ):
 op_add=functools.partial( binop, operator.add )
 op_mul=functools.partial( binop, operator.mul )
 
-def halt( memory, pc ):
+def halt( memory, pc, istream, ostream ):
+    return memory
+
+def op_input( memory, pc, istream, ostream ):
+    memory[memory[pc+1]]=int(istream.readline())
+    return memory
+
+def op_output( memory, pc, istream, ostream ):
+    ostream.write(f'{memory[memory[pc+1]]}\n')
     return memory
 
 OPCODES={ 1: ( op_add, 4 ),
         2: ( op_mul, 4 ),
+        3: ( op_input, 2 ),
+        4: ( op_output, 2 ),
         99: ( halt, 0 ) } 
 
-def execute( tape ):
+def execute( tape, istream=None, ostream=None ):
     """
     >>> print_tape( execute( '1,0,0,0,99' ) )
     '2,0,0,0,99'
@@ -60,6 +70,15 @@ def execute( tape ):
     '2,4,4,5,99,9801'
     >>> print_tape( execute( '1,1,1,4,99,5,6,0,99' ) )
     '30,1,1,4,2,5,6,0,99'
+    >>> import io
+    >>> s=io.StringIO('65')
+    >>> print_tape( execute( '3,3,99,0', s ) )
+    '3,3,99,65'
+    >>> s=io.StringIO()
+    >>> print_tape( execute( '4,3,99,21', ostream=s ) )
+    '4,3,99,21'
+    >>> s.getvalue()
+    '21\\n'
     """
     if isinstance( tape, str ):
         memory=load_tape( tape )
@@ -68,7 +87,7 @@ def execute( tape ):
     pc=0
     op, jmp = OPCODES[memory[pc]]
     while op != halt:
-        memory=op(memory,pc)
+        memory=op(memory,pc,istream,ostream)
         pc+=jmp
         op, jmp = OPCODES[memory[pc]]
     return memory 
@@ -80,14 +99,5 @@ def execute_prog_with_noun_and_verb( tape, noun, verb ):
     memory=execute( memory )
     return memory[0]
 
-def part_2( tape ):
-    for noun in range(100):
-        for verb in range(100):
-            result = execute_prog_with_noun_and_verb( PROGRAM_TAPE, noun, verb )
-            if result == 19690720:
-                return (noun,verb)
-    
 if __name__ == "__main__":
-    print( execute_prog_with_noun_and_verb( PROGRAM_TAPE, 12, 2 ) )
-    print( part_2( PROGRAM_TAPE ) )
-
+    pass
