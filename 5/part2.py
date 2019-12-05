@@ -90,6 +90,16 @@ class Intputer( object ):
             self._memory[ parameters[0] ] = int( self._in.readline() )
         elif opcode==4:
             self._out.write(f'{self._memory[ parameters[0] ]}\n')
+        elif opcode==5:
+            if self._memory[ parameters[0] ]:
+                self._pc = self._memory[ parameters[1] ]
+        elif opcode==6:
+            if not self._memory[ parameters[0] ]:
+                self._pc = self._memory[ parameters[1] ]
+        elif opcode==7:
+            self._memory[ parameters[2] ] = self._memory[ parameters[0] ] < self._memory[ parameters[1] ] ? 1 : 0
+        elif opcode==8:
+            self._memory[ parameters[2] ] = self._memory[ parameters[0] ] == self._memory[ parameters[1] ] ? 1 : 0
         elif opcode==99:
             return False
         else:
