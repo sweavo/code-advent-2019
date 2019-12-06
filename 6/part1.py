@@ -10,14 +10,14 @@ import functools
 import operator
 
 def map_orbitees( pairs ):
-    """ Return a map with orbiters as keys and orbitees as values.
+    """ Return a map with orbiters as keys and orbitees as values.  This can be used to traverse towards root.
     >>> map_orbitees( ['A)B','A)C','C)D' ] )
     {'B': 'A', 'C': 'A', 'D': 'C'}
     """
     return dict( [ (orbiter, orbitee) for orbitee, orbiter in map( lambda x: x.split(')'), pairs ) ] )
 
 def walk_map( direct_orbiters ):
-    """
+    """ For each leaf and internal node, traverse to the root and return the path traversed.
     >>> list(walk_map( {'B': 'A', 'C': 'A', 'D': 'C'} ))
     [['B', 'A'], ['C', 'A'], ['D', 'C', 'A']]
     """
@@ -30,7 +30,7 @@ def walk_map( direct_orbiters ):
         yield path
 
 def count_orbits( direct_orbiters ):
-    """
+    """ The number of orbits in a path is one less than the number of bodies in it.
     >>> count_orbits( map_orbitees( ['COM)B', 'B)C', 'C)D', 'D)E', 'E)F', 'B)G', 'G)H', 'D)I', 'E)J', 'J)K', 'K)L' ] ) )
     42
     """
@@ -38,5 +38,5 @@ def count_orbits( direct_orbiters ):
 
 if __name__ == "__main__":
     with open('input.txt','r') as f:
-        print( count_orbits( map_orbitees( f ) ) )
+        print( count_orbits( map_orbitees( map( str.strip, f ) ) ) )
 
