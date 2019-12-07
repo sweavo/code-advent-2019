@@ -8,10 +8,10 @@ PROGRAM_TAPE='3,225,1,225,6,6,1100,1,238,225,104,0,1101,69,55,225,1001,144,76,22
 
 class Intputer( object ):
 
-    def __init__(self, tape=None, inputs=[], outstream=None ):
+    def __init__(self, tape=None, in_iter=None, outstream=None ):
         self._pc = 0
         self._memory={}
-        self._in = iter(inputs)
+        self._in = in_iter
         self._out = outstream or io.StringIO()
         if tape is not None:
             self.load_tape( tape )
@@ -92,7 +92,7 @@ class Intputer( object ):
         elif opcode==2:
             self.poke( parameters[2], self.peek( parameters[0] ) * self.peek( parameters[1] ) )
         elif opcode==3:
-            self.poke( parameters[0], int( self._in.readline() ) )
+            self.poke( parameters[0], next( self._in ) )
         elif opcode==4:
             return self.peek( parameters[0] )
         elif opcode==5:
@@ -125,9 +125,9 @@ class Intputer( object ):
         >>> Intputer( '1,0,0,0,99').run().print_tape()
         '2,0,0,0,99'
         >>> import io
-        >>> Intputer( '3,3,99', inputs=io.StringIO('32\\n') ).run().peek(3)
+        >>> Intputer( '3,3,99', iter([32])).run().peek(3)
         32
-        >>> Intputer( '3,3,99').input(23).run().peek(3)
+        >>> Intputer( '3,3,99',iter([23])).run().peek(3)
         23
         >>> next(Intputer( '4,3,99,1010' ))
         1010
@@ -139,9 +139,9 @@ class Intputer( object ):
         20
         >>> Intputer( '10002,4,3,4,99' ).run().print_tape()
         '10002,4,3,396,99'
-        >>> next(Intputer( '3,9,8,9,10,9,4,9,99,-1,8' ).input(7))
+        >>> next(Intputer( '3,9,8,9,10,9,4,9,99,-1,8', iter([7]) ))
         0
-        >>> next(Intputer( '3,9,8,9,10,9,4,9,99,-1,8' ).input(8))
+        >>> next(Intputer( '3,9,8,9,10,9,4,9,99,-1,8', iter([8])))
         1
         """
         out = self.execute( self.fetch() )
@@ -151,10 +151,6 @@ class Intputer( object ):
             out = self.execute( self.fetch() )
         return self #for chaining
 
-    def input( self, text ):
-        self._in = io.StringIO( str(text) )
-        return self
-
     def output( self ):
         return self._out.getvalue()
     
@@ -163,7 +159,7 @@ def day5part2():
     >>> day5part2()
     '7873292\\n'
     """
-    return Intputer( PROGRAM_TAPE ).input(5).run().output()
+    return Intputer( PROGRAM_TAPE, iter([5])).run().output()
 
 
 class Amplifier( Intputer ):
@@ -184,7 +180,7 @@ class Amplifier( Intputer ):
         self._phase =phase
 
     def __call__( self, value ):
-        self.input( f'{self._phase}\n{value}' )
+        self._in=iter( [self._phase, value] )
         self.run()
         return int(self.output())
 
