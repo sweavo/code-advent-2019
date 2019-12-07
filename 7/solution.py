@@ -137,6 +137,7 @@ class Intputer( object ):
         while out:
             if out is not True: # i.e. it is a number
                 self._out.write( f"{out}\n" ) 
+            out = self.execute( self.fetch() )
         return self #for chaining
 
     def input( self, text ):
