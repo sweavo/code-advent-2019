@@ -8,10 +8,10 @@ PROGRAM_TAPE='3,225,1,225,6,6,1100,1,238,225,104,0,1101,69,55,225,1001,144,76,22
 
 class Intputer( object ):
 
-    def __init__(self, tape=None, instream=None, outstream=None ):
+    def __init__(self, tape=None, inputs=[], outstream=None ):
         self._pc = 0
         self._memory={}
-        self._in = instream
+        self._in = iter(inputs)
         self._out = outstream or io.StringIO()
         if tape is not None:
             self.load_tape( tape )
@@ -125,7 +125,7 @@ class Intputer( object ):
         >>> Intputer( '1,0,0,0,99').run().print_tape()
         '2,0,0,0,99'
         >>> import io
-        >>> Intputer( '3,3,99', instream=io.StringIO('32\\n') ).run().peek(3)
+        >>> Intputer( '3,3,99', inputs=io.StringIO('32\\n') ).run().peek(3)
         32
         >>> Intputer( '3,3,99').input(23).run().peek(3)
         23
