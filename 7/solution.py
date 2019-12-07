@@ -86,23 +86,23 @@ class Intputer( object ):
             pmodes = pmodes // 10
 
         if opcode==1:
-            self._memory[ parameters[2] ] = self._memory[ parameters[0] ] + self._memory[ parameters[1] ]
+            self.poke( parameters[2], self.peek( parameters[0] ) + self.peek( parameters[1] ) )
         elif opcode==2:
-            self._memory[ parameters[2] ] = self._memory[ parameters[0] ] * self._memory[ parameters[1] ]
+            self.poke( parameters[2], self.peek( parameters[0] ) * self.peek( parameters[1] ) )
         elif opcode==3:
-            self._memory[ parameters[0] ] = int( self._in.readline() )
+            self.poke( parameters[0], int( self._in.readline() ) )
         elif opcode==4:
-            self._out.write(f'{self._memory[ parameters[0] ]}\n')
+            self._out.write(f'{self.peek( parameters[0] ) }\n')
         elif opcode==5:
-            if self._memory[ parameters[0] ]:
-                self._pc = self._memory[ parameters[1] ]
+            if self.peek( parameters[0] ):
+                self._pc = self.peek( parameters[1] ) 
         elif opcode==6:
-            if not self._memory[ parameters[0] ]:
-                self._pc = self._memory[ parameters[1] ]
+            if not self.peek( parameters[0] ):
+                self._pc = self.peek( parameters[1] )
         elif opcode==7:
-            self._memory[ parameters[2] ] = 1 if self._memory[ parameters[0] ] < self._memory[ parameters[1] ] else 0
+            self.poke( parameters[2], 1 if self.peek( parameters[0] ) < self.peek( parameters[1] ) else 0 )
         elif opcode==8:
-            self._memory[ parameters[2] ] = 1 if self._memory[ parameters[0] ] == self._memory[ parameters[1] ] else 0
+            self.poke( parameters[2], 1 if self.peek( parameters[0] ) == self.peek( parameters[1] ) else 0 )
         elif opcode==99:
             return False
         else:
