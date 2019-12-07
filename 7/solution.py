@@ -122,6 +122,8 @@ class Intputer( object ):
         23
         >>> Intputer( '4,3,99,1010', outstream=io.StringIO()).run()._out.getvalue()
         '1010\\n'
+        >>> Intputer( '4,3,99,1010', outstream=io.StringIO()).run().output()
+        '1010\\n'
         >>> Intputer( '1002,4,3,4,33,99' ).run().peek(4)
         99
         >>> Intputer( '102,4,3,5,99,33' ).run().peek(5)
