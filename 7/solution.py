@@ -111,6 +111,15 @@ class Intputer( object ):
             raise KeyError(f'{opcode} is not a valid opcode.')
         return True
 
+    def __iter__( self ): return self # support iterator interface
+    def __next__( self ):
+        out=self.execute( self.fetch() )
+        while out is True:
+            out=self.execute( self.fetch() )
+        if out is False:
+            raise StopIterator
+        return out
+
     def run( self ):
         """
         >>> Intputer( '1,0,0,0,99').run().print_tape()
@@ -120,20 +129,20 @@ class Intputer( object ):
         32
         >>> Intputer( '3,3,99').input(23).run().peek(3)
         23
-        >>> Intputer( '4,3,99,1010', outstream=io.StringIO()).run()._out.getvalue()
-        '1010\\n'
-        >>> Intputer( '4,3,99,1010', outstream=io.StringIO()).run().output()
-        '1010\\n'
+        >>> next(Intputer( '4,3,99,1010' ))
+        1010
+        >>> next(Intputer( '4,3,99,1010' ))
+        1010
         >>> Intputer( '1002,4,3,4,33,99' ).run().peek(4)
         99
         >>> Intputer( '102,4,3,5,99,33' ).run().peek(5)
         20
         >>> Intputer( '10002,4,3,4,99' ).run().print_tape()
         '10002,4,3,396,99'
-        >>> Intputer( '3,9,8,9,10,9,4,9,99,-1,8' ).input(7).run().output()
-        '0\\n'
-        >>> Intputer( '3,9,8,9,10,9,4,9,99,-1,8' ).input(8).run().output()
-        '1\\n'
+        >>> next(Intputer( '3,9,8,9,10,9,4,9,99,-1,8' ).input(7))
+        0
+        >>> next(Intputer( '3,9,8,9,10,9,4,9,99,-1,8' ).input(8))
+        1
         """
         out = self.execute( self.fetch() )
         while out is not False:
