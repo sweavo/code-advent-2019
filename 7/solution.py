@@ -141,6 +141,14 @@ class Intputer( object ):
 
     def output( self ):
         return self._out.getvalue()
+    
+def day5part2():
+    """
+    >>> day5part2()
+    '7873292\\n'
+    """
+    return Intputer( PROGRAM_TAPE ).input(5).run().output()
+
 if __name__ == "__main__":
-    print (Intputer( PROGRAM_TAPE ).input(5).run().output() )
+    print ( day5part2() )
 
