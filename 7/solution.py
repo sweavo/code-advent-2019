@@ -1,4 +1,5 @@
 #!python3
+import functools
 import io
 import sys
 
@@ -149,6 +150,38 @@ def day5part2():
     """
     return Intputer( PROGRAM_TAPE ).input(5).run().output()
 
-if __name__ == "__main__":
-    print ( day5part2() )
+class AmplifierTest1( Intputer ):
+    """
+    >>> AmplifierTest1( 4 )( 0 )
+    4
+    >>> AmplifierTest1( 3 )( 4 )
+    43
+    >>> AmplifierTest1( 2 )( 43 )
+    432
+    >>> AmplifierTest1( 1 )( 432 )
+    4321
+    >>> AmplifierTest1( 0 )( 4321 )
+    43210
+    """
+    def __init__( self, phase ):
+        super(AmplifierTest1,self).__init__( "3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0" )
+        self._phase =phase
 
+    def __call__( self, value ):
+        self.input( f'{self._phase}\n{value}' )
+        self.run()
+        return int(self.output())
+
+def amp_chain( amp_class, phases ):
+    """
+    >>> amp_chain( AmplifierTest1, [4,3,2,1,0] )
+    '43210\\n'
+    """
+    chain = map( amp_class, phases )
+    return functools.reduce( lambda a,f: f(a), chain, 0 )
+ 
+def day7part1(tape, phases ):
+    return Intputer( tape ).input('4\n0').run().output()
+
+if __name__ == "__main__":
+   pass 
