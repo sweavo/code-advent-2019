@@ -94,7 +94,7 @@ class Intputer( object ):
         elif opcode==3:
             self.poke( parameters[0], int( self._in.readline() ) )
         elif opcode==4:
-            self._out.write(f'{self.peek( parameters[0] ) }\n')
+            return self.peek( parameters[0] )
         elif opcode==5:
             if self.peek( parameters[0] ):
                 self._pc = self.peek( parameters[1] ) 
@@ -133,8 +133,10 @@ class Intputer( object ):
         >>> Intputer( '3,9,8,9,10,9,4,9,99,-1,8' ).input(8).run().output()
         '1\\n'
         """
-        while self.execute( self.fetch() ):
-            pass
+        out = self.execute( self.fetch() )
+        while out:
+            if out is not True: # i.e. it is a number
+                self._out.write( f"{out}\n" ) 
         return self #for chaining
 
     def input( self, text ):
