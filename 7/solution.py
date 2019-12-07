@@ -8,10 +8,10 @@ PROGRAM_TAPE='3,225,1,225,6,6,1100,1,238,225,104,0,1101,69,55,225,1001,144,76,22
 
 class Intputer( object ):
 
-    def __init__(self, tape=None, in_iter=None, outstream=None ):
+    def __init__(self, tape=None, inputs=[], outstream=None ):
         self._pc = 0
         self._memory={}
-        self._in = in_iter
+        self._in = iter(inputs)
         self._out = outstream or io.StringIO()
         if tape is not None:
             self.load_tape( tape )
@@ -125,9 +125,9 @@ class Intputer( object ):
         >>> Intputer( '1,0,0,0,99').run().print_tape()
         '2,0,0,0,99'
         >>> import io
-        >>> Intputer( '3,3,99', iter([32])).run().peek(3)
+        >>> Intputer( '3,3,99', [32]).run().peek(3)
         32
-        >>> Intputer( '3,3,99',iter([23])).run().peek(3)
+        >>> Intputer( '3,3,99',[23]).run().peek(3)
         23
         >>> next(Intputer( '4,3,99,1010' ))
         1010
@@ -139,9 +139,9 @@ class Intputer( object ):
         20
         >>> Intputer( '10002,4,3,4,99' ).run().print_tape()
         '10002,4,3,396,99'
-        >>> next(Intputer( '3,9,8,9,10,9,4,9,99,-1,8', iter([7]) ))
+        >>> next(Intputer( '3,9,8,9,10,9,4,9,99,-1,8', [7] ))
         0
-        >>> next(Intputer( '3,9,8,9,10,9,4,9,99,-1,8', iter([8])))
+        >>> next(Intputer( '3,9,8,9,10,9,4,9,99,-1,8', [8]))
         1
         """
         out = self.execute( self.fetch() )
@@ -159,7 +159,7 @@ def day5part2():
     >>> day5part2()
     '7873292\\n'
     """
-    return Intputer( PROGRAM_TAPE, iter([5])).run().output()
+    return Intputer( PROGRAM_TAPE, [5]).run().output()
 
 
 class Amplifier( Intputer ):
