@@ -151,15 +151,12 @@ class Intputer( object ):
             out = self.execute( self.fetch() )
         return self #for chaining
 
-    def output( self ):
-        return self._out.getvalue()
-    
 def day5part2():
     """
     >>> day5part2()
-    '7873292\\n'
+    7873292
     """
-    return Intputer( PROGRAM_TAPE, [5]).run().output()
+    return next(Intputer( PROGRAM_TAPE, [5]))
 
 
 class Amplifier( Intputer ):
@@ -181,8 +178,7 @@ class Amplifier( Intputer ):
 
     def __call__( self, value ):
         self._in=iter( [self._phase, value] )
-        self.run()
-        return int(self.output())
+        return next(self)
 
 AmplifierTest1=functools.partial( Amplifier, "3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0" )
 AmplifierTest2=functools.partial( Amplifier, "3,23,3,24,1002,24,10,24,1002,23,-1,23,101,5,23,23,1,24,23,23,4,23,99,0,0" )
