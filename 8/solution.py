@@ -78,6 +78,13 @@ def underlay_layer( upper, lower ):
     """
     return ''.join(map( lambda tup: underlay(*tup), zip( upper, lower ) )) 
 
+def split_rasters( chars, width ):
+    """ we already built this for a different purpose; reuse
+    >>> list(split_rasters( '123412345234', 4 ))
+    ['1234', '1234', '5234']
+    """
+    return split_layers( chars, width )
+
 if __name__ == "__main__":
     print( day8part1)
 
