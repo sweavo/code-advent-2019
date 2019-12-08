@@ -56,6 +56,19 @@ def day8part1( ):
         image_stream=f.read()
     return day8part1query( image_stream, 25, 6 )
 
+def underlay( pix_top, pix_bottom ):
+    """
+    >>> underlay('0','1')
+    '0'
+    >>> underlay('1','2')
+    '1'
+    >>> underlay('2','0')
+    '0'
+    >>> underlay('2','2')
+    '2'
+    """
+    return pix_bottom if pix_top=='2' else pix_top
+
 if __name__ == "__main__":
     print( day8part1)
 
