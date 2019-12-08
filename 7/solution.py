@@ -1,4 +1,5 @@
 #!python3
+import appendit
 import functools
 import io
 import itertools
@@ -11,6 +12,15 @@ class Intputer( object ):
         Here is an inputer drawing its input from another intputer
     >>> wputer = Intputer( "4,3,99,14" ) 
     >>> rputer=Intputer( "3,3,99,88", wputer )
+    >>> rputer.peek(3)
+    88
+    >>> list(rputer)
+    []
+    >>> rputer.peek(3)
+    14
+    >>> wputer = Intputer( "4,3,99,14" ) 
+    >>> rputer=Intputer( "3,3,99,88" )
+    >>> rputer._in=wputer
     >>> rputer.peek(3)
     88
     >>> list(rputer)
@@ -123,6 +133,7 @@ class Intputer( object ):
 
     def __iter__( self ): return self # support iterator interface
     def __next__( self ):
+        """ run until an output statement or halt """
         out=self.execute( self.fetch() )
         while out is True:
             out=self.execute( self.fetch() )
@@ -199,6 +210,8 @@ def amp_factory( tape ):
 AmplifierTest1=amp_factory( "3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0" )
 AmplifierTest2=amp_factory("3,23,3,24,1002,24,10,24,1002,23,-1,23,101,5,23,23,1,24,23,23,4,23,99,0,0" )
 AmplifierTest3=amp_factory("3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0" )
+AmplifierPart2Test1=amp_factory("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5")
+AmplifierPart2Test2=amp_factory("3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10")
 
 def amp_chain( amp_class, phases ):
     """
@@ -209,7 +222,7 @@ def amp_chain( amp_class, phases ):
     >>> amp_chain( AmplifierTest3, [1,0,4,3,2] )
     65210
     """
-    chain = map( amp_class, phases )
+    chain = list(map( amp_class, phases ))
     return functools.reduce( lambda a,f: f(a), chain, 0 )
 
 def day7part1():
@@ -226,6 +239,36 @@ def day7part1():
 
     return functools.reduce(max,map(phase_tester,phase_permutations))
 
+def feedback_amp_chain( amp_class, phases ):
+    """
+    >>> feedback_amp_chain( AmplifierPart2Test1, [9,8,7,6,5] )
+    139629729
+    >>> feedback_amp_chain( AmplifierPart2Test2, [9,7,8,5,6] )
+    18216
+    """
+    out=0
+    chain = list(map( amp_class, phases ) )
+    try:
+        while True:
+            out = functools.reduce( lambda a,f: f(a), chain, out)
+    finally:
+        return out
+
+def day7part2():
+    """
+    >>> day7part2()
+    27561242
+    """
+    phase_permutations = itertools.permutations(range(5,10))
+    with open( 'tape.txt','r' ) as f:
+        # amplifier is an Amplifier, programmed with the puzzle input tape
+        amplifier=functools.partial( Amplifier, f.read() )
+    # phase tester is an amp_chain of amplifier. So it takes a list of phases and runs the chain
+    phase_tester=functools.partial( feedback_amp_chain, amplifier )
+
+    return functools.reduce(max,map(phase_tester,phase_permutations))
+    
+
 if __name__ == "__main__":
-   print( day7part1() )
+    print( day7part1() )
  
