@@ -1,5 +1,6 @@
 #!python3
 import collections
+import functools
 
 def count_pixels( image_chars ):
     """ 
@@ -91,6 +92,26 @@ def render( chars ):
     ' X   X  XX  X'
     """
     return ''.join([ 'X' if char=='1' else ' ' for char in chars ])
+
+def day8part2():
+    """
+    >>> day8part2()
+    X    XXX  XXX   XX  XXXX 
+    X    X  X X  X X  X X    
+    X    XXX  X  X X    XXX  
+    X    X  X XXX  X    X    
+    X    X  X X X  X  X X    
+    XXXX XXX  X  X  XX  XXXX 
+    """
+    with open( 'input.txt','r') as f:
+        image_stream=f.read()
+    w=25
+    h=6
+    layers = split_layers( image_stream, w*h )
+    composed = functools.reduce( underlay_layer, layers )
+    lines = split_rasters( composed, w )
+    for raster in lines:
+        print(render(raster))
 
 if __name__ == "__main__":
     print( day8part1)
