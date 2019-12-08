@@ -69,6 +69,15 @@ def underlay( pix_top, pix_bottom ):
     """
     return pix_bottom if pix_top=='2' else pix_top
 
+def underlay_layer( upper, lower ):
+    """
+    >>> underlay_layer('01212', '12012' )
+    '01012'
+    >>> underlay_layer('21202120', '10200010' )
+    '11200110'
+    """
+    return ''.join(map( lambda tup: underlay(*tup), zip( upper, lower ) )) 
+
 if __name__ == "__main__":
     print( day8part1)
 
