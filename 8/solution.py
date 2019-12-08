@@ -38,6 +38,7 @@ def day8part1( chars, width, height ):
     >>> day8part1( '123456789012', 3, 2)
     1
     """
-    return 1
+    results = sorted( day8part1question( chars, width, height ), reverse=True )
+    return results[0][1]
 
     
