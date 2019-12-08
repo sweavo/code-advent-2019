@@ -85,6 +85,13 @@ def split_rasters( chars, width ):
     """
     return split_layers( chars, width )
 
+def render( chars ):
+    """
+    >>> render('0123012311231')
+    ' X   X  XX  X'
+    """
+    return ''.join([ 'X' if char=='1' else ' ' for char in chars ])
+
 if __name__ == "__main__":
     print( day8part1)
 
