@@ -21,7 +21,9 @@ def split_layers( images_chars, size ):
     ['hel', 'lot', 'her', 'e!!']
     """
     for ii in range(0,len(images_chars), size):
-        yield images_chars[ii:ii+size]
+        this_slice = images_chars[ii:ii+size]
+        if len(this_slice) == size:
+            yield this_slice
 
 def day8part1question( chars, w, h ):
     """ chars contains several images.  Generate a sequence of 
@@ -33,21 +35,27 @@ def day8part1question( chars, w, h ):
     for counts in  map( count_pixels, split_layers( chars, w * h ) ):
         yield (counts['0'], counts['1']*counts['2'])
 
+def day8part1sortlayers( chars, width, height ):
+    return sorted( day8part1question( chars, width, height ) )
+
 def day8part1query( chars, width, height ):
     """
     >>> day8part1query( '123456789012', 3, 2)
     1
     >>> 
     """
-    results = sorted( day8part1question( chars, width, height ), reverse=True )
+    results = day8part1sortlayers( chars, width, height )
     return results[0][1]
 
 def day8part1( ):
     """ 
     >>> day8part1()
-    2193
+    1596
     """
     with open( 'input.txt','r') as f:
         image_stream=f.read()
     return day8part1query( image_stream, 25, 6 )
+
+if __name__ == "__main__":
+    print( day8part1)
 
