@@ -1,5 +1,4 @@
 #!python3
-import appendit
 import functools
 import io
 import itertools
