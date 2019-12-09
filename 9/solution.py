@@ -28,7 +28,8 @@ class Intputer( object ):
     14
     """ 
     def __init__(self, tape=None, inputs=[], outstream=None ):
-        self._pc = 0
+        self._pc=0
+        self._relative_base=0
         self._memory={}
         self._in = iter(inputs)
         self._out = outstream or io.StringIO()
@@ -93,14 +94,28 @@ class Intputer( object ):
                 6: 2,
                 7: 3,
                 8: 3,
+                9: 1,
                99: 0 }
  
     def execute(self, instruction ):
+        """
+        >>> poot = Intputer('109,19,204,-34,99')
+        >>> poot._relative_base=2000
+        >>> poot.poke(1985,1234)
+        >>> next(poot)
+        1234
+        >>> poot._relative_base
+        2019
+        
+        """
         opcode=instruction%100
         pmodes=instruction//100
         parameters = []
         for p in range(self.PCOUNT[opcode]):
-            if pmodes % 2:
+            pmode=pmodes % 10
+            if pmode==2:
+                parameters.append( self.fetch() + self._relative_base )
+            elif pmode==1:
                 parameters.append( self.pcinc() )
             else:
                 parameters.append( self.fetch() )
@@ -124,6 +139,8 @@ class Intputer( object ):
             self.poke( parameters[2], 1 if self.peek( parameters[0] ) < self.peek( parameters[1] ) else 0 )
         elif opcode==8: # EQ
             self.poke( parameters[2], 1 if self.peek( parameters[0] ) == self.peek( parameters[1] ) else 0 )
+        elif opcode==9: # Adjust Relative Base
+            self._relative_base = self._relative_base + self.peek( parameters[0] )
         elif opcode==99:
             return False
         else:
