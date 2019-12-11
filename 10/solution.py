@@ -7,6 +7,27 @@ MAP1=""".#..#
         ....#
         ...##"""
 
+BIG_MAP=""" .#..##.###...#######
+            ##.############..##.
+            .#.######.########.#
+            .###.#######.####.#.
+            #####.##.#.##.###.##
+            ..#####..#.#########
+            ####################
+            #.####....###.#.#.##
+            ##.#################
+            #####.##.###..####..
+            ..######..##.#######
+            ####.##.####...##..#
+            .#####..#.######.###
+            ##...#.##########...
+            #.##########.#######
+            .####.#.###.###.#.##
+            ....##.##.###..#####
+            .#.#.###########.###
+            #.#.#.#####.####.###
+            ###.##.####.##.#..##"""
+
 def tidy_map( space_map ):
     """
     >>> tidy_map(MAP1)
@@ -16,19 +37,19 @@ def tidy_map( space_map ):
 
 def find_rocks( tidy_map ):
     """
-    >>> list(find_rocks(['#']))
+    >>> find_rocks(['#'])
     [(0, 0)]
-    >>> list(find_rocks(['.#']))
+    >>> find_rocks(['.#'])
     [(1, 0)]
-    >>> list(find_rocks(['..','#.']))
+    >>> find_rocks(['..','#.'])
     [(0, 1)]
-    >>> list(find_rocks(['#.', '.#']))
+    >>> find_rocks(['#.', '.#'])
     [(0, 0), (1, 1)]
     """
-    for y,line in enumerate(tidy_map):
-        for x,char in enumerate(line):
-            if char!='.':
-                yield x,y
+    return [ (x,y)
+        for y,line in enumerate(tidy_map)
+            for x,char in enumerate(line)
+                if char!='.' ]
 
 def sightline( source, dest ):
     """
@@ -61,7 +82,7 @@ def sightline( source, dest ):
 
 def actually_sees( rocklist, looker, target ):
     """
-    >>> world=list(find_rocks(tidy_map(MAP1)))
+    >>> world=find_rocks(tidy_map(MAP1))
     >>> actually_sees( world, (1, 0), (3, 4) )
     (2, 2)
     >>> actually_sees( world, (2, 2), (3, 4) )
@@ -74,7 +95,7 @@ def actually_sees( rocklist, looker, target ):
 
 def count_visible_rocks( rocklist, looker ):
     """
-    >>> rocklist=list(find_rocks(tidy_map(MAP1)))
+    >>> rocklist=find_rocks(tidy_map(MAP1))
     >>> count_visible_rocks( rocklist, (3, 4) )
     8
     """
@@ -85,12 +106,52 @@ def count_visible_rocks( rocklist, looker ):
 
 def visibilities( rocklist ):
     """
+    >>> list(visibilities(find_rocks(tidy_map(MAP1))))
+    [(1, 0, 7), (4, 0, 7), (0, 2, 6), (1, 2, 7), (2, 2, 7), (3, 2, 7), (4, 2, 5), (4, 3, 7), (3, 4, 8), (4, 4, 7)]
     """
     for candidate in rocklist:
         yield (candidate[0], candidate[1], count_visible_rocks( rocklist, candidate ) )
 
+def best_spot( rocklist ):
+    """
+    >>> best_spot( find_rocks(tidy_map(MAP1)))
+    (3, 4, 8)
+    >>> best_spot( find_rocks(tidy_map(BIG_MAP)))
+    (11, 13, 210)
+    """
+    return sorted( visibilities( rocklist ), key=lambda x: x[2], reverse=True )[0]
 
 def day10part1():
-    pass
+    """
+    >>> day10part1()
+    (14, 17, 260)
+    """
+    print( best_spot( find_rocks( tidy_map( """
+                ##.##..#.####...#.#.####
+                ##.###..##.#######..##..
+                ..######.###.#.##.######
+                .#######.####.##.#.###.#
+                ..#...##.#.....#####..##
+                #..###.#...#..###.#..#..
+                ###..#.##.####.#..##..##
+                .##.##....###.#..#....#.
+                ########..#####..#######
+                ##..#..##.#..##.#.#.#..#
+                ##.#.##.######.#####....
+                ###.##...#.##...#.######
+                ###...##.####..##..#####
+                ##.#...#.#.....######.##
+                .#...####..####.##...##.
+                #.#########..###..#.####
+                #.##..###.#.######.#####
+                ##..##.##...####.#...##.
+                ###...###.##.####.#.##..
+                ####.#.....###..#.####.#
+                ##.####..##.#.##..##.#.#
+                #####..#...####..##..#.#
+                .##.##.##...###.##...###
+                ..###.########.#.###..#.
+    """ ) ) ) )
 
-    
+
+ 
