@@ -72,3 +72,25 @@ def actually_sees( rocklist, looker, target ):
             return position
     return target
 
+def count_visible_rocks( rocklist, looker ):
+    """
+    >>> rocklist=list(find_rocks(tidy_map(MAP1)))
+    >>> count_visible_rocks( rocklist, (3, 4) )
+    8
+    """
+    result=set()
+    for candidate in filter( lambda x: x!=looker, rocklist ):
+        result.add(actually_sees( rocklist, looker, candidate ) )
+    return len(result)
+
+def visibilities( rocklist ):
+    """
+    """
+    for candidate in rocklist:
+        yield (candidate[0], candidate[1], count_visible_rocks( rocklist, candidate ) )
+
+
+def day10part1():
+    pass
+
+    
