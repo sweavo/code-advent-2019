@@ -58,3 +58,17 @@ def sightline( source, dest ):
     step_y=delta_y/step
     for ii in range(1,step):
         yield ( int(source[0] + step_x * ii), int(source[1] + step_y * ii ))
+
+def actually_sees( rocklist, looker, target ):
+    """
+    >>> world=list(find_rocks(tidy_map(MAP1)))
+    >>> actually_sees( world, (1, 0), (3, 4) )
+    (2, 2)
+    >>> actually_sees( world, (2, 2), (3, 4) )
+    (3, 4)
+    """
+    for position in sightline( looker, target ):
+        if position in rocklist:
+            return position
+    return target
+
