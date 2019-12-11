@@ -36,6 +36,10 @@ def sightline( source, dest ):
     []
     >>> list(sightline( (0,0),(2,2) ) )
     [(1, 1)]
+    >>> list(sightline( (1,0),(3,2) ) )
+    [(2, 1)]
+    >>> list(sightline( (0,1),(2,3) ) )
+    [(1, 2)]
     >>> list(sightline( (0,0), (6,3) ) )
     [(2, 1), (4, 2)]
     >>> list(sightline( (0,0), (8,6) ) )
@@ -54,6 +58,3 @@ def sightline( source, dest ):
     step_y=delta_y/step
     for ii in range(1,step):
         yield ( int(source[0] + step_x * ii), int(source[1] + step_y * ii ))
-
-def actually_sees( tidy_map, source, target ):
-    pass
