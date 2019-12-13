@@ -153,5 +153,24 @@ def day10part1():
                 ..###.########.#.###..#.
     """ ) ) ) )
 
+def angle( origin, point ):
+    """
+    It doesn't matter what the units of this angle are; it doesn't even have 
+    to increase at a constant rate.  But it must keep increasing clockwise from
+    north and must have a single unambiguous value for a given angle.
+    >>> angle( (0,0),(0,1) )
+    0.0
+    >>> angle( (0,0),(0,-1) )
+    3.141592653589793
+    >>> angle( (0,0),(1,0) )
+    1.5707963267948966
+    >>> angle( (0,0),(-1,0) )
+    4.71238898038469
+    """
+    x=point[0]-origin[0]
+    y=point[1]-origin[1]
+    radians=math.atan2( x, y) 
+    if radians<0.0:
+        radians = radians + 2*math.pi
+    return radians
 
- 
