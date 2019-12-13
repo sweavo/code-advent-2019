@@ -93,16 +93,21 @@ def actually_sees( rocklist, looker, target ):
             return position
     return target
 
+def enum_visible_rocks( rocklist, looker ):
+    """ Extracted from count_visible_rocks
+    """
+    result=set()
+    for candidate in filter( lambda x: x!=looker, rocklist ):
+        result.add(actually_sees( rocklist, looker, candidate ) )
+    return result
+
 def count_visible_rocks( rocklist, looker ):
     """
     >>> rocklist=find_rocks(tidy_map(MAP1))
     >>> count_visible_rocks( rocklist, (3, 4) )
     8
     """
-    result=set()
-    for candidate in filter( lambda x: x!=looker, rocklist ):
-        result.add(actually_sees( rocklist, looker, candidate ) )
-    return len(result)
+    return len(enum_visible_rocks( rocklist, looker) )
 
 def visibilities( rocklist ):
     """
@@ -121,12 +126,7 @@ def best_spot( rocklist ):
     """
     return sorted( visibilities( rocklist ), key=lambda x: x[2], reverse=True )[0]
 
-def day10part1():
-    """
-    >>> day10part1()
-    (14, 17, 260)
-    """
-    print( best_spot( find_rocks( tidy_map( """
+DAY10_MAP="""
                 ##.##..#.####...#.#.####
                 ##.###..##.#######..##..
                 ..######.###.#.##.######
@@ -151,7 +151,16 @@ def day10part1():
                 #####..#...####..##..#.#
                 .##.##.##...###.##...###
                 ..###.########.#.###..#.
-    """ ) ) ) )
+    """ 
+
+DAY10_ROCKS=find_rocks( tidy_map( DAY10_MAP) )
+
+def day10part1():
+    """
+    >>> day10part1()
+    (14, 17, 260)
+    """
+    print( best_spot( DAY10_ROCKS ) )
 
 def angle( origin, point ):
     """
@@ -190,8 +199,65 @@ def angles_relative( origin, points ):
     for point in filter( lambda x: x!=origin, points ):
         yield ( point[0], point[1], angle( origin, point ) )
 
+def shooting_sequence_one_pass( base, points ):
+    """
+    >>> list(shooting_sequence_one_pass( (8,3), find_rocks( tidy_map( '''
+    ...    .#....#####...#..
+    ...    ##...##.#####..##
+    ...    ##...#...#.#####.
+    ...    ..#.....#...###..
+    ...    ..#.#.....#....## '''))))[:9]
+    [(8, 1), (9, 0), (9, 1), (10, 0), (9, 2), (11, 1), (12, 1), (11, 2), (15, 1)]
+    """
+    for point3 in sorted( angles_relative( base, enum_visible_rocks( points, base ) ), key=lambda x: x[2] ):
+        yield ( point3[0], point3[1] )
+
 def shooting_sequence( base, points ):
     """
-    >>> shooting_sequence( (8,3), [] )
+    >>> sequence = list(shooting_sequence( (11, 13), find_rocks( tidy_map( BIG_MAP ) ) ))
+    >>> sequence[0]
+    (11, 12)
+    >>> sequence[1]
+    (12, 1)
+    >>> sequence[2]
+    (12, 2)
+    >>> sequence[9]
+    (12, 8)
+    >>> sequence[19]
+    (16, 0)
+    >>> sequence[49]
+    (16, 9)
+    >>> sequence[99]
+    (10, 16)
+    >>> sequence[198]
+    (9, 6)
+    >>> sequence[199]
+    (8, 2)
+    >>> sequence[200]
+    (10, 9)
+    >>> sequence[298]
+    (11, 1)
+    >>> len(sequence)
+    299
     """
+    universe = set( filter( lambda x: x != base, points ))
+    last_len=0 
+    while len( universe )!=last_len:
+        last_len=len(universe)
+        shot_in_this_rotation = list(shooting_sequence_one_pass( base, universe ))
+        for result in shot_in_this_rotation:
+            yield result
+        universe = universe - set(shot_in_this_rotation)
+    if last_len != 0:
+        raise ValueError( "shooting_sequence missed some rocks: " + repr( universe ) )
+
+def rock_id_as_int( rock ):
+    return rock[0]*100 + rock[1]
+
+def day10part2():
+    """
+    >>> day10part2()
+    608
+    """
+    return rock_id_as_int( list( shooting_sequence( ( 14, 17), DAY10_ROCKS ) )[199] )
 
