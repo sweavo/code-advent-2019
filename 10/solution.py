@@ -158,17 +158,17 @@ def angle( origin, point ):
     It doesn't matter what the units of this angle are; it doesn't even have 
     to increase at a constant rate.  But it must keep increasing clockwise from
     north and must have a single unambiguous value for a given angle.
-    >>> angle( (0,0),(0,1) )
-    0.0
     >>> angle( (0,0),(0,-1) )
+    0.0
+    >>> angle( (0,0),(0,1) )
     3.141592653589793
     >>> angle( (0,0),(1,0) )
     1.5707963267948966
     >>> angle( (0,0),(-1,0) )
     4.71238898038469
-    >>> angle( (3,0),(3,1) )
+    >>> angle( (3,0),(3,-1) )
     0.0
-    >>> angle( (0,2),(0,1) )
+    >>> angle( (0,-2),(0,-1) )
     3.141592653589793
     >>> angle( (4,4),(6,4) )
     1.5707963267948966
@@ -176,9 +176,22 @@ def angle( origin, point ):
     4.71238898038469
     """
     x=point[0]-origin[0]
-    y=point[1]-origin[1]
+    y=origin[1]-point[1] # our up is -ve
     radians=math.atan2( x, y) 
     if radians<0.0:
         radians = radians + 2*math.pi
     return radians
+
+def angles_relative( origin, points ):
+    """
+    >>> list(angles_relative( (0,0), [ (0,0), (0,-1), (0,1), (1,0),(-1,0) ] ))
+    [(0, -1, 0.0), (0, 1, 3.141592653589793), (1, 0, 1.5707963267948966), (-1, 0, 4.71238898038469)]
+    """
+    for point in filter( lambda x: x!=origin, points ):
+        yield ( point[0], point[1], angle( origin, point ) )
+
+def shooting_sequence( base, points ):
+    """
+    >>> shooting_sequence( (8,3), [] )
+    """
 
