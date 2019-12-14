@@ -61,6 +61,15 @@ class HullPaintingRobot( object ):
     ,<#,,
     ,,,,,
     ,,,,,
+    >>> hpr.consume( [0,0,1,0,1,0,0,1,1,0,1,0] )
+    >>> hpr.print_map()
+    ,,,,,
+    ,,<#,
+    ,,,#,
+    ,##,,
+    ,,,,,
+    >>> hpr.count_painted()
+    6
     """
     COLOR_BLACK=0
     COLOR_WHITE=1
@@ -75,7 +84,7 @@ class HullPaintingRobot( object ):
         return 1 if self._ground[y][x]=='#' else 0
     
     def paint(self, color ):
-        char='x' if color==self.COLOR_BLACK else '#'
+        char=',' if color==self.COLOR_BLACK else '#'
         x,y=self._position
         line=self._ground[y]
         line=line[:x]+char+line[x+1:]
@@ -98,7 +107,7 @@ class HullPaintingRobot( object ):
                 self.paint(next(it))
                 self.turn(next(it))
                 self.step()
-        finally:
+        except StopIteration:
             pass
 
     def showbot(self):
