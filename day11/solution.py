@@ -1,10 +1,12 @@
 #!python3
+import collections
+import functools
 import numpy as NP
 
 from tapes import DAY11_PROGRAM
 import sys
-sys.path.append('../10')
-import solution as day10solution
+sys.path.append('..')
+import day9.solution as day9
 
 TURN_LEFT=0
 TURN_RIGHT=1
@@ -32,11 +34,11 @@ def turn( facevector, direction ):
         return ( y, -x )
     else:
         return ( -y, x )
-
+   
 class HullPaintingRobot( object ):
     """ 
-    >>> hpr=HullPaintingRobot( [',,,,,',',,,,,',',,,,,',',,,,,',',,,,,'],(2,2))
-    >>> hpr.print_map()
+    >>> hpr=HullPaintingRobot( )
+    >>> hpr.print_map((-2,-2),(2,2))
     ,,,,,
     ,,,,,
     ,,^,,
@@ -55,14 +57,14 @@ class HullPaintingRobot( object ):
     >>> hpr.step()
     >>> next(hpr)
     0
-    >>> hpr.print_map()
+    >>> hpr.print_map((-2,-2),(2,2))
     ,,,,,
     ,,,,,
     ,<#,,
     ,,,,,
     ,,,,,
     >>> hpr.consume( [0,0,1,0,1,0,0,1,1,0,1,0] )
-    >>> hpr.print_map()
+    >>> hpr.print_map((-2,-2),(2,2))
     ,,,,,
     ,,<#,
     ,,,#,
@@ -73,22 +75,20 @@ class HullPaintingRobot( object ):
     """
     COLOR_BLACK=0
     COLOR_WHITE=1
-    def __init__(self, ground, position ):
-        self._ground=ground
-        self._position=position
-        self._facing=(0,-1)
+    def __init__(self):
+        self._ground=set()
         self._painted_coords=set()
-
+        self._position=(0,0)
+        self._facing=(0,-1)
+    def __iter__(self):return self
     def __next__(self): 
-        x,y=self._position
-        return 1 if self._ground[y][x]=='#' else 0
+        return 1 if self._position in self._ground else 0
     
     def paint(self, color ):
-        char=',' if color==self.COLOR_BLACK else '#'
-        x,y=self._position
-        line=self._ground[y]
-        line=line[:x]+char+line[x+1:]
-        self._ground[y]=line
+        if color:
+            self._ground.add( self._position )
+        else:
+            self._ground.discard( self._position )
         self._painted_coords.add( self._position )
 
     def turn(self, direction ):
@@ -116,12 +116,47 @@ class HullPaintingRobot( object ):
         elif self._facing==(-1,0): return '<'
         elif self._facing==(1,0): return '>'
 
-    def print_map( self ):
-        for y,line in enumerate( self._ground ):
-            for x,char in enumerate( line ):
+    def print_map( self, mincorner, maxcorner ):
+        for y in range( mincorner[1], maxcorner[1]+1 ):
+            for x in range( mincorner[0], maxcorner[0]+1 ):
                 if (x,y) == self._position:
                     print (self.showbot(),end="")
                 else:
-                    print (char,end="")
+                    print ('#' if (x,y) in self._ground else ',',end="")
             print ('')
+
+    def print_whole_map( self ):
+        minx=functools.reduce(min,map(lambda t:t[0], self._ground))
+        maxx=functools.reduce(max,map(lambda t:t[0], self._ground))
+        miny=functools.reduce(min,map(lambda t:t[1], self._ground))
+        maxy=functools.reduce(max,map(lambda t:t[1], self._ground))
+        self.print_map( (minx,miny), (maxx,maxy) )
+
+def run_hpr( tape, start=0 ):
+    hpr=HullPaintingRobot( )
+    hpr.paint(start)
+    brain=day9.Intputer(tape,inputs=hpr )
+    hpr.consume(brain)
+    return hpr
+    
+def day11part1():
+    """
+    >>> day11part1()
+    2539
+    """
+    hpr=run_hpr( DAY11_PROGRAM )
+    return hpr.count_painted()
+
+def day11part2():
+    """
+    >>> day11part2()
+    ####,#,,,,####,###,,#,,#,,,##,###,,,##,
+    ,,,#,#,,,,#,,,,#,,#,#,#,,,,,#,#,,#,#,,#
+    ,,#,,#,,,,###,,###,,##,,,,,,#,#,,#,#,,#
+    ,#,,,#,,,,#,,,,#,,#,#,#,,,,,#,###,,####
+    #,,,,#,,,,#,,,,#,,#,#,#,,#,,#,#,#,,#,,#
+    ####,####,####,###,,#,,#,,##,,#,,#,#,,#
+    """
+    hpr=run_hpr( DAY11_PROGRAM,1 )
+    hpr.print_whole_map()
 
