@@ -35,6 +35,11 @@ def tidy_map( space_map ):
     """
     return list(map(str.strip,space_map.strip().split('\n')))
 
+def enumerate2d( space ):
+    for y,line in enumerate( space ):
+        for x,char in enumerate( line ):
+            yield (x,y),char
+
 def find_rocks( tidy_map ):
     """
     >>> find_rocks(['#'])
@@ -46,10 +51,10 @@ def find_rocks( tidy_map ):
     >>> find_rocks(['#.', '.#'])
     [(0, 0), (1, 1)]
     """
-    return [ (x,y)
-        for y,line in enumerate(tidy_map)
-            for x,char in enumerate(line)
-                if char!='.' ]
+    return [ coord 
+            for coord,char 
+            in enumerate2d( tidy_map ) 
+            if char != '.' ]
 
 def sightline( source, dest ):
     """
