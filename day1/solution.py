@@ -3,15 +3,15 @@ import sys
 
 def calc_fuel( mass ):
     """
-    >>> solution.calc_fuel(5)
+    >>> calc_fuel(5)
     0
-    >>> solution.calc_fuel(12)
+    >>> calc_fuel(12)
     2
-    >>> solution.calc_fuel(14)
+    >>> calc_fuel(14)
     2
-    >>> solution.calc_fuel(1969)
+    >>> calc_fuel(1969)
     654
-    >>> solution.calc_fuel(100756)
+    >>> calc_fuel(100756)
     33583
     """
     return max(0,mass // 3 - 2)
