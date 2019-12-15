@@ -34,16 +34,26 @@ class Cabinet( object ):
         return self
 
     def show( self ):
+        print(self.get_display(), end='' )
+
+    def get_display( self ):
         GFX=' @#-O'
         minx=functools.reduce(min,map(lambda t:t[0], self._screen))
         maxx=functools.reduce(max,map(lambda t:t[0], self._screen))
         miny=functools.reduce(min,map(lambda t:t[1], self._screen))
         maxy=functools.reduce(max,map(lambda t:t[1], self._screen))
-        print('+' + '-'*(maxx-minx) + '-+' )
+        rendered='+' + '-'*(maxx-minx) + '-+\n' 
         for y in range(miny, maxy+1):
-            print('|', end='')
+            rendered+='|'
             for x in range(minx, maxx+1):
-                print ( GFX[self._screen.get( (x,y), 0 ) ], end='' )
-            print ('|')
-        print('+' + '-'*(maxx-minx) + '-+' )
+                rendered+=GFX[self._screen.get( (x,y), 0 ) ]
+            rendered+='|\n'
+        rendered+='+' + '-'*(maxx-minx) + '-+\n' 
+        return rendered
 
+def day13part1():
+    """
+    >>> day13part1()
+    1
+    """
+    return 1
