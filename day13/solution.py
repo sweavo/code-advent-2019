@@ -54,6 +54,7 @@ class Cabinet( object ):
 def day13part1():
     """
     >>> day13part1()
-    1
+    341
     """
-    return 1
+    display = Cabinet( day9.Intputer( DAY13_PROGRAM ) ).run().get_display()
+    return len( list(filter(lambda x: x=='#', display ) ) )
