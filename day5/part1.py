@@ -97,34 +97,25 @@ class Intputer( object ):
 
     def run( self ):
         """
-        >>> poot = Intputer( '1,0,0,0,99' )
-        >>> poot.run()
-        >>> poot.print_tape()
+        >>> Intputer( '1,0,0,0,99').run().print_tape()
         '2,0,0,0,99'
         >>> import io
-        >>> poot = Intputer( '3,3,99', instream=io.StringIO('32\\n') )
-        >>> poot.run()
-        >>> poot.peek(3)
+        >>> Intputer( '3,3,99', instream=io.StringIO('32\\n') ).run().peek(3)
         32
-        >>> poot = Intputer( '4,3,99,1010', outstream=io.StringIO())
-        >>> poot.run()
-        >>> poot._out.getvalue()
+        >>> Intputer( '3,3,99').input(23).run().peek(3)
+        23
+        >>> Intputer( '4,3,99,1010', outstream=io.StringIO()).run()._out.getvalue()
         '1010\\n'
-        >>> poot = Intputer( '1002,4,3,4,33,99' )
-        >>> poot.run()
-        >>> poot.peek(4)
+        >>> Intputer( '1002,4,3,4,33,99' ).run().peek(4)
         99
-        >>> poot = Intputer( '102,4,3,5,99,33' )
-        >>> poot.run()
-        >>> poot.peek(5)
+        >>> Intputer( '102,4,3,5,99,33' ).run().peek(5)
         20
-        >>> poot = Intputer( '10002,4,3,4,99' )
-        >>> poot.run()
-        >>> poot.print_tape()
+        >>> Intputer( '10002,4,3,4,99' ).run().print_tape()
         '10002,4,3,396,99'
         """
         while self.execute( self.fetch() ):
             pass
+        return self #for chaining
 
     def input( self, text ):
         self._in = io.StringIO( str(text) )
