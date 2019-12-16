@@ -53,7 +53,7 @@ def day8part1( ):
     >>> day8part1()
     1596
     """
-    with open( 'input.txt','r') as f:
+    with open( 'input-day8.txt','r') as f:
         image_stream=f.read()
     return day8part1query( image_stream, 25, 6 )
 
@@ -103,7 +103,7 @@ def day8part2():
     X    X  X X X  X  X X    
     XXXX XXX  X  X  XX  XXXX 
     """
-    with open( 'input.txt','r') as f:
+    with open( 'input-day8.txt','r') as f:
         image_stream=f.read()
     w=25
     h=6
