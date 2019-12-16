@@ -63,9 +63,13 @@ def chop_common_tails( l1, l2 ):
         chop-=1
     chop+=1
     return l1[:chop],l2[:chop]
- 
-if __name__ == "__main__":
-    with open('input.txt','r') as f:
+
+def day6part2():
+    """
+    >>> day6part2()
+    517
+    """
+    with open('orbits-day6.txt','r') as f:
         puzzle_input = map_orbitees( map( str.strip, f ) )
     print (sum(map(len, chop_common_tails( path_to_root( puzzle_input, 'YOU' ), path_to_root( puzzle_input, 'SAN' ) ) ) ))
 
