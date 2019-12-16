@@ -68,6 +68,11 @@ def ceildiv( needed, per_run ):
     return math.ceil( needed / per_run )
 
 class Factory( object ):
+    """
+    >>> import collections
+    >>> collections.Counter( Factory( EXAMPLE_NANOFACTORY ).bill_of_materials( 'FUEL', 1, ['ORE'] ) )
+    Counter({'ORE': 31})
+    """
     def __init__( self, program ):
         self._productions = prepare_factory( parse_productions( program ) )
     
