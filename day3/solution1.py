@@ -49,8 +49,11 @@ def get_crossings( pointses ):
     pointsets = list(map(set,pointses))
     return pointsets[0].intersection( pointsets[1] )
 
-if __name__ == "__main__":
-
+def day3part1():
+    """
+    >>> day3part1()
+    731
+    """
     with open('wires.txt','r') as f:
         tapes = f.readlines()
 
@@ -60,5 +63,5 @@ if __name__ == "__main__":
    
     crossings = get_crossings( pointses ) 
    
-    print (manhattan_distance(sorted(crossings,key=manhattan_distance)[0]) )
+    return manhattan_distance(sorted(crossings,key=manhattan_distance)[0])
 
