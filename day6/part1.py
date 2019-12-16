@@ -43,12 +43,12 @@ def count_orbits( direct_orbiters ):
     """
     return sum( map( lambda path: len(path),walk_map( direct_orbiters ) ) )
 
-def part1():
+def day6part1():
     """
-    >>> part1()
+    >>> day6part1()
     358244
     """
-    with open('input.txt','r') as f:
+    with open('orbits-day6.txt','r') as f:
         print( count_orbits( map_orbitees( map( str.strip, f ) ) ) )
 
 def chop_common_tails( l1, l2 ):
