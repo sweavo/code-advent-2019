@@ -4,7 +4,7 @@ import functools
 # pull in an Intputer
 import sys
 sys.path.append('..')
-import day9.solution as day9
+import day09 as day9
 
 from tapes import DAY13_PROGRAM
 
