@@ -64,4 +64,13 @@ def day3part1():
     crossings = get_crossings( pointses ) 
    
     return manhattan_distance(sorted(crossings,key=manhattan_distance)[0])
+def day3part2():
+    """
+    >>> day3part2()
+    5672
+    """
+    with open('wires.txt','r') as f:
+        tapes = f.readlines()
+    print (calc_cheapest_crossing( tapes ))
+
 
