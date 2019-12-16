@@ -75,7 +75,6 @@ class Intputer( object ):
                99: 0 }
  
     def execute(self, instruction ):
-        print ( f'Intstr: {instruction}', file=sys.stderr )
         opcode=instruction%100
         pmodes=instruction//100
         parameters = []
@@ -142,5 +141,10 @@ class Intputer( object ):
 
     def output( self ):
         return self._out.getvalue()
-if __name__ == "__main__":
-    print (Intputer( PROGRAM_TAPE ).input(5).run().output() )
+
+def day4part2():
+    """
+    >>> day4part2()
+    7873292
+    """  
+    return int(Intputer( PROGRAM_TAPE ).input(5).run().output())

@@ -126,6 +126,9 @@ class Intputer( object ):
         while self.execute( self.fetch() ):
             pass
 
+    def input( self, text ):
+        self._in = io.StringIO( str(text) )
+        return self
 
 def day4part1():
     """
