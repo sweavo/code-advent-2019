@@ -37,6 +37,18 @@ class Turtle(object):
     def distance_at_location( self, point ):
         return self.locations.index(point)+1
 
+def manhattan_distance( point ):
+    """
+    >>> manhattan_distance( (10, 0) )
+    10
+    >>> manhattan_distance( (3,4) )
+    7
+    >>> manhattan_distance( (10, -2) )
+    12
+    >>> manhattan_distance( (-3,4) )
+    7
+    """
+    return sum(map(abs,point))
 
 def get_crossings( pointses ):
     pointsets = list(map(set,pointses))
