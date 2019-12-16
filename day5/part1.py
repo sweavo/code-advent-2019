@@ -153,4 +153,10 @@ def day4part1():
     poot.run()
     return int(out_stream.getvalue().split('\n')[-2])
 
+def day4part2():
+    """
+    >>> day4part2()
+    7873292
+    """  
+    return int(Intputer( PROGRAM_TAPE ).input(5).run().output())
 
