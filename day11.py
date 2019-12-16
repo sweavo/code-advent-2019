@@ -5,8 +5,7 @@ import numpy as NP
 
 from tapes import DAY11_PROGRAM
 import sys
-sys.path.append('..')
-import day9.solution as day9
+import day09 as day9
 
 TURN_LEFT=0
 TURN_RIGHT=1
