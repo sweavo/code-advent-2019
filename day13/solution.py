@@ -58,3 +58,4 @@ def day13part1():
     """
     display = Cabinet( day9.Intputer( DAY13_PROGRAM ) ).run().get_display()
     return len( list(filter(lambda x: x=='#', display ) ) )
+

@@ -43,7 +43,11 @@ def calc_total_fuel( mass ):
     """
     return sum(additional_fuel_generator( mass ))
 
-if __name__ == "__main__":  
+def day01part2():
+    """
+    >>> day01part2()
+    4739374
+    """
     with open( 'modules.txt', 'r') as f:
         mass_strings = map( str.strip, f)
         masses = map( int, mass_strings)
