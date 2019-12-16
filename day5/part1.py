@@ -10,7 +10,7 @@ class Intputer( object ):
         self._pc = 0
         self._memory={}
         self._in = instream
-        self._out = outstream
+        self._out = outstream or io.StringIO()
         if tape is not None:
             self.load_tape( tape )
 
@@ -68,6 +68,10 @@ class Intputer( object ):
                 2: 3, 
                 3: 1, 
                 4: 1,
+                5: 2,
+                6: 2,
+                7: 3,
+                8: 3,
                99: 0 }
  
     def execute(self, instruction ):
@@ -89,6 +93,16 @@ class Intputer( object ):
             self._memory[ parameters[0] ] = int( self._in.readline() )
         elif opcode==4:
             self._out.write(f'{self._memory[ parameters[0] ]}\n')
+        elif opcode==5:
+            if self._memory[ parameters[0] ]:
+                self._pc = self._memory[ parameters[1] ]
+        elif opcode==6:
+            if not self._memory[ parameters[0] ]:
+                self._pc = self._memory[ parameters[1] ]
+        elif opcode==7:
+            self._memory[ parameters[2] ] = 1 if self._memory[ parameters[0] ] < self._memory[ parameters[1] ] else 0
+        elif opcode==8:
+            self._memory[ parameters[2] ] = 1 if self._memory[ parameters[0] ] == self._memory[ parameters[1] ] else 0
         elif opcode==99:
             return False
         else:
@@ -112,6 +126,10 @@ class Intputer( object ):
         20
         >>> Intputer( '10002,4,3,4,99' ).run().print_tape()
         '10002,4,3,396,99'
+        >>> Intputer( '3,9,8,9,10,9,4,9,99,-1,8' ).input(7).run().output()
+        '0\\n'
+        >>> Intputer( '3,9,8,9,10,9,4,9,99,-1,8' ).input(8).run().output()
+        '1\\n'
         """
         while self.execute( self.fetch() ):
             pass
@@ -120,6 +138,9 @@ class Intputer( object ):
     def input( self, text ):
         self._in = io.StringIO( str(text) )
         return self
+
+    def output( self ):
+        return self._out.getvalue()
 
 def day4part1():
     """
