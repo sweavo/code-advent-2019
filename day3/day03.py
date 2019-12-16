@@ -64,6 +64,7 @@ def day3part1():
     crossings = get_crossings( pointses ) 
    
     return manhattan_distance(sorted(crossings,key=manhattan_distance)[0])
+
 def day3part2():
     """
     >>> day3part2()
