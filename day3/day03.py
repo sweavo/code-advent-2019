@@ -93,13 +93,12 @@ def calc_cheapest_crossing( tapes ):
 
     return sorted(distances)[0]
 
-#def day3part2():
-#    """
-#    >>> day3part2()
-#    5672
-#    """
-#    with open('wires.txt','r') as f:
-#        tapes = f.readlines()
-#    print (calc_cheapest_crossing( tapes ))
-#
+def day3part2():
+    """
+    >>> day3part2()
+    5672
+    """
+    with open('wires.txt','r') as f:
+        tapes = f.readlines()
+    print (calc_cheapest_crossing( tapes ))
 
