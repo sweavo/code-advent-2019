@@ -71,7 +71,6 @@ class Intputer( object ):
                99: 0 }
  
     def execute(self, instruction ):
-        print ( f'Intstr: {instruction}', file=sys.stderr )
         opcode=instruction%100
         pmodes=instruction//100
         parameters = []
@@ -128,10 +127,15 @@ class Intputer( object ):
             pass
 
 
-if __name__ == "__main__":
+def day4part1():
+    """
+    >>> day4part1()
+    7157989
+    """
     in_stream = io.StringIO('1')
     out_stream = io.StringIO()
     poot = Intputer( PROGRAM_TAPE, in_stream, out_stream )
     poot.run()
-    print ( out_stream.getvalue() )
+    return int(out_stream.getvalue().split('\n')[-2])
+
 
