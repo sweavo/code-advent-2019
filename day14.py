@@ -70,15 +70,16 @@ def ceildiv( needed, per_run ):
 class Factory( object ):
     """
     >>> import collections
-    >>> collections.Counter( Factory( EXAMPLE_NANOFACTORY ).bill_of_materials( 'FUEL', 1, ['ORE'] ) )
-    Counter({'ORE': 31})
+    >>> collections.Counter( Factory( EXAMPLE_NANOFACTORY ).bill_of_materials( { 'FUEL': -1 }, ['ORE'] ) )
+    Counter({'ORE': -31})
     """
     def __init__( self, program ):
         self._productions = prepare_factory( parse_productions( program ) )
-    
+
     def bill_of_materials( self, inventory, terminals):
-        """ Deficit is a map from chemicals to amounts. It represents the inventory
-            and the requirement to produce chemicals. 
+        """ Inventory is a defaultdict(int), representing the number of doses of each chemical
+            available.  A negative amount represents the need to produce a chemical, unless its
+            name appears in terminals.
         >>> Factory( "1 A => 1 B" ).bill_of_materials( {'B': -1}, ['A'] )
         {'A': -1}
         >>> Factory( "1 A => 1 B" ).bill_of_materials( {'B': -2}, ['A'] )
@@ -96,6 +97,20 @@ class Factory( object ):
         >>> Factory( "1 A, 2 B => 4 C\\n 4 A => 1 B" ).bill_of_materials( {'C': -4}, ['A'] )
         {'A': -9}
         """
-        for chemical, quantity in inventory.items():
-            print (f'{chemical}: {quantity}')
-
+        have_doubts=True
+        while have_doubts:
+            have_doubts=False
+            for chemical, quantity in inventory.items():
+                if chemical in terminals:
+                    continue
+                if quantity > 0:
+                    continue
+                if quantity < 0:
+                    have_doubts=True
+                    run_yield, recipe = self._productions[chemical]
+                    runs=ceildiv( -quantity, run_yield )
+                    for q, c in recipe:
+                        inventory[c]=inventory.get(c,0)-q
+                    inventory[chemical]=inventory.get(chemical,0)+run_yield
+                    break
+        return { k: v for k, v in inventory.items() if v < 0 }
