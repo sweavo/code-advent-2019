@@ -76,32 +76,26 @@ class Factory( object ):
     def __init__( self, program ):
         self._productions = prepare_factory( parse_productions( program ) )
     
-    def bill_of_materials( self, output_material, quantity_needed, terminals):
+    def bill_of_materials( self, inventory, terminals):
+        """ Deficit is a map from chemicals to amounts. It represents the inventory
+            and the requirement to produce chemicals. 
+        >>> Factory( "1 A => 1 B" ).bill_of_materials( {'B': -1}, ['A'] )
+        {'A': -1}
+        >>> Factory( "1 A => 1 B" ).bill_of_materials( {'B': -2}, ['A'] )
+        {'A': -2}
+        >>> Factory( "1 A, 2 B => 1 C" ).bill_of_materials( {'C': -2}, ['A', 'B'] )
+        {'A': -2, 'B': -4}
+        >>> Factory( "1 A, 2 B => 2 C" ).bill_of_materials( {'C': -4}, ['A', 'B'] )
+        {'A': -2, 'B': -4}
+        >>> Factory( "1 A, 2 B => 3 C" ).bill_of_materials( {'C': -4}, ['A', 'B'] )
+        {'A': -2, 'B': -4}
+        >>> Factory( "1 A, 2 B => 4 C" ).bill_of_materials( {'C': -4}, ['A', 'B'] )
+        {'A': -1, 'B': -2}
+        >>> Factory( "1 A, 2 B => 4 C\\n 4 A => 1 B" ).bill_of_materials( {'C': -4}, ['A', 'B'] )
+        {'A': -1, 'B': -2}
+        >>> Factory( "1 A, 2 B => 4 C\\n 4 A => 1 B" ).bill_of_materials( {'C': -4}, ['A'] )
+        {'A': -9}
         """
-        >>> Factory( "1 A => 1 B" ).bill_of_materials( 'B', 1, ['A'] )
-        ['A']
-        >>> Factory( "1 A => 1 B" ).bill_of_materials( 'B', 2, ['A'] )
-        ['A', 'A']
-        >>> Factory( "1 A, 2 B => 1 C" ).bill_of_materials( 'C', 2, ['A', 'B'] )
-        ['A', 'A', 'B', 'B', 'B', 'B']
-        >>> Factory( "1 A, 2 B => 2 C" ).bill_of_materials( 'C', 4, ['A', 'B'] )
-        ['A', 'A', 'B', 'B', 'B', 'B']
-        >>> Factory( "1 A, 2 B => 3 C" ).bill_of_materials( 'C', 4, ['A', 'B'] )
-        ['A', 'A', 'B', 'B', 'B', 'B']
-        >>> Factory( "1 A, 2 B => 4 C" ).bill_of_materials( 'C', 4, ['A', 'B'] )
-        ['A', 'B', 'B']
-        >>> Factory( "1 A, 2 B => 4 C\\n 4 A => 1 B" ).bill_of_materials( 'C', 4, ['A', 'B'] )
-        ['A', 'B', 'B']
-        >>> Factory( "1 A, 2 B => 4 C\\n 4 A => 1 B" ).bill_of_materials( 'C', 4, ['A'] )
-        ['A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A']
-        """
-        run_yield, recipe = self._productions[output_material]
-        runs=ceildiv( quantity_needed, run_yield )
-        needed=[]
-        for q,i in recipe:
-            if i in terminals:
-                needed.extend( [i]*q*runs )
-            else:
-                needed.extend( self.bill_of_materials( i, q*runs, terminals ) )
-        return needed
+        for chemical, quantity in inventory.items():
+            print (f'{chemical}: {quantity}')
 
