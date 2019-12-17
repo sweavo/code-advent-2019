@@ -8,6 +8,23 @@ import day09 as day9
 
 from tapes import DAY13_PROGRAM
 
+def render_screen( screen, GFX=' @#-O' ):
+    """ take a dict of coords to int, and render as a list of strings ready
+        for printing.
+    """
+    minx=functools.reduce(min,map(lambda t:t[0], screen))
+    maxx=functools.reduce(max,map(lambda t:t[0], screen))
+    miny=functools.reduce(min,map(lambda t:t[1], screen))
+    maxy=functools.reduce(max,map(lambda t:t[1], screen))
+    rendered='+' + '-'*(maxx-minx) + '-+\n' 
+    for y in range(miny, maxy+1):
+        rendered+='|'
+        for x in range(minx, maxx+1):
+            rendered+=GFX[screen.get( (x,y), 0 ) ]
+        rendered+='|\n'
+    rendered+='+' + '-'*(maxx-minx) + '-+\n' 
+    return rendered
+
 class Cabinet( object ):
     """ This takes an iterator (e.g. Intputer) and draws the results.
     >>> Cabinet( [1,2,3,6,5,4] ).run().show()
@@ -37,19 +54,7 @@ class Cabinet( object ):
         print(self.get_display(), end='' )
 
     def get_display( self ):
-        GFX=' @#-O'
-        minx=functools.reduce(min,map(lambda t:t[0], self._screen))
-        maxx=functools.reduce(max,map(lambda t:t[0], self._screen))
-        miny=functools.reduce(min,map(lambda t:t[1], self._screen))
-        maxy=functools.reduce(max,map(lambda t:t[1], self._screen))
-        rendered='+' + '-'*(maxx-minx) + '-+\n' 
-        for y in range(miny, maxy+1):
-            rendered+='|'
-            for x in range(minx, maxx+1):
-                rendered+=GFX[self._screen.get( (x,y), 0 ) ]
-            rendered+='|\n'
-        rendered+='+' + '-'*(maxx-minx) + '-+\n' 
-        return rendered
+        return render_screen( self._screen )
 
 def day13part1():
     """
