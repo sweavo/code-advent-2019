@@ -75,7 +75,7 @@ class Factory( object ):
     """
     def __init__( self, program ):
         self._productions = prepare_factory( parse_productions( program ) )
-
+    
     def bill_of_materials( self, inventory, terminals):
         """ Inventory is a defaultdict(int), representing the number of doses of each chemical
             available.  A negative amount represents the need to produce a chemical, unless its
@@ -97,20 +97,23 @@ class Factory( object ):
         >>> Factory( "1 A, 2 B => 4 C\\n 4 A => 1 B" ).bill_of_materials( {'C': -4}, ['A'] )
         {'A': -9}
         """
-        have_doubts=True
-        while have_doubts:
-            have_doubts=False
+        def first_deficit( inventory, terminals ):
             for chemical, quantity in inventory.items():
                 if chemical in terminals:
                     continue
-                if quantity > 0:
+                if quantity >= 0:
                     continue
-                if quantity < 0:
-                    have_doubts=True
-                    run_yield, recipe = self._productions[chemical]
-                    runs=ceildiv( -quantity, run_yield )
-                    for q, c in recipe:
-                        inventory[c]=inventory.get(c,0)-q
-                    inventory[chemical]=inventory.get(chemical,0)+run_yield
-                    break
+                return chemical, quantity
+            return None, 0
+ 
+        chemical, quantity = first_deficit( inventory, terminals )
+        while quantity<0:
+            have_doubts=True
+            run_yield, recipe = self._productions[chemical]
+            runs=ceildiv( -quantity, run_yield )
+            for q, c in recipe:
+                inventory[c]=inventory.get(c,0)-q
+            inventory[chemical]=inventory.get(chemical,0)+run_yield
+            chemical, quantity = first_deficit( inventory, terminals )
+
         return { k: v for k, v in inventory.items() if v < 0 }
