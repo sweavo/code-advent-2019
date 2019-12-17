@@ -78,10 +78,26 @@ class Factory( object ):
         self._inventory={}
   
     def require(self, quantity, chemical ):
-        self._inventory[chemical]=self._inventory.get(chemical,0)-quantity
+        """ Mark in the inventory that a quantity of a chemical is wanted. """
+        result = self._inventory.get(chemical,0)-quantity
+        if result == 0:
+            del self._inventory[chemical]
+        else:
+            self._inventory[chemical] = result
+        return self
+
+    def credit( self, quantity, chemical ):
+        result = self._inventory.get(chemical,0)+quantity
+        if result == 0:
+            del self._inventory[chemical]
+        else:
+            self._inventory[chemical] = result
         return self
  
     def first_deficit( self, terminals ):
+        """ return a chemical that is lacking in the inventory, and how many
+            units of same, or (None, 0) if no such chemical.
+        """
         for chemical, quantity in self._inventory.items():
             if chemical in terminals:
                 continue
@@ -115,8 +131,8 @@ class Factory( object ):
             run_yield, recipe = self._productions[chemical]
             runs=ceildiv( -quantity, run_yield )
             for q, c in recipe:
-                self._inventory[c]=self._inventory.get(c,0)-q
-            self._inventory[chemical]=self._inventory.get(chemical,0)+run_yield
+                self.require( q*runs, c )
+            self.credit( run_yield*runs, chemical)
             chemical, quantity = self.first_deficit( terminals )
 
         return { k: v for k, v in self._inventory.items() if v < 0 }
