@@ -1,6 +1,7 @@
 #!python3
 import math
 import re
+from input_day14 import PRODUCTIONS
 
 RE_QCOMMAW=re.compile(r'\s*(\d+)\s+(\w+)\s*')
 
@@ -148,4 +149,13 @@ class Factory( object ):
             chemical, quantity = self.first_deficit( terminals )
 
         return { k: v for k, v in self._inventory.items() if v < 0 }
+
+def day14part1():
+    """
+    >>> day14part1()
+    502491
+    """
+    factory =Factory( PRODUCTIONS )
+    needs = factory.require(1,'FUEL').bill_of_materials(['ORE'])
+    return -needs['ORE']
 
