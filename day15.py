@@ -9,6 +9,7 @@
 """
 import tapes_day15
 import day09
+import day13
 
 class FIFO( object ):
     def __init__(self):
@@ -51,4 +52,27 @@ def day15part1():
     212
     """
     return search_directions(Fifoputer(tapes_day15.PROGRAM) )
+
+MOVE=[None,
+        lambda xy: (xy[0], xy[1]-1),
+        lambda xy: (xy[0], xy[1]+1),
+        lambda xy: (xy[0]-1, xy[1]),
+        lambda xy: (xy[0]+1, xy[1])]
+
+def map_area( fifoputer, area_map={}, location=(0,0), entered_by=None ):
+    """
+    >>> a={}
+    >>> map_area( Fifoputer( tapes_day15.PROGRAM ), a )
+    >>> print(day13.render_screen( a, GFX='# *' ))
+    """
+    
+    for direction in [1,2,3,4]:
+        if direction==entered_by: 
+            continue
+        result=fifoputer.interact( direction )
+        area_map[MOVE[direction](location)] = result 
+        if result > 0: # then we did move
+            map_area( fifoputer, area_map, MOVE[direction](location), entered_by=OPPOSITE_DIRECTION[direction] )
+    if entered_by is not None:
+        fifoputer.interact( entered_by ) # go back whence we came
 
