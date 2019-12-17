@@ -13,6 +13,16 @@ EXAMPLE_NANOFACTORY="""
     7 A, 1 E => 1 FUEL
 """
 
+EXAMPLE2_NANOFACTORY="""
+    9 ORE => 2 A
+    8 ORE => 3 B
+    7 ORE => 5 C
+    3 A, 4 B => 1 AB
+    5 B, 7 C => 1 BC
+    4 C, 1 A => 1 CA
+    2 AB, 3 BC, 4 CA => 1 FUEL
+"""
+
 def parse_quantity_comma_what( ss ):
     """
     >>> parse_quantity_comma_what('10 ORE')
@@ -72,6 +82,8 @@ class Factory( object ):
     >>> import collections
     >>> collections.Counter( Factory( EXAMPLE_NANOFACTORY ).require(1,'FUEL').bill_of_materials( ['ORE'] ) )
     Counter({'ORE': -31})
+    >>> collections.Counter( Factory( EXAMPLE2_NANOFACTORY ).require(1,'FUEL').bill_of_materials( ['ORE'] ) )
+    Counter({'ORE': -165})
     """
     def __init__( self, program ):
         self._productions = prepare_factory( parse_productions( program ) )
@@ -136,3 +148,4 @@ class Factory( object ):
             chemical, quantity = self.first_deficit( terminals )
 
         return { k: v for k, v in self._inventory.items() if v < 0 }
+
