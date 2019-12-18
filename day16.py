@@ -53,15 +53,32 @@ def fft( signal ):
         response+=(last_digit( sum( multiplied ) ) )
     return response
 
+def fftXn( signal,n=100 ):
+    """
+    >>> fft100( 80871224585914546619083218645595 )
+    '24176176'
+    >>> fft100( '19617804207202209144916044189917' )
+    '73745418'
+    >>> fft100( '69317163492948606335995924319873' )
+    '52432133'
+    """
+    for x in range(n):
+        signal=fft(signal)
+    return signal[:8]
+    
 def day16part1():
     """
     #>>> day16part1()
     #'76892664'
     """
-    signal=DAY16_SIGNAL
-    for x in range(100):
-        signal=fft(signal)
-    return signal[:8]
+    return fftXn( DAY16_SIGNAL )
 
 if __name__ == "__main__":
-    print (day16part1())
+    #print (day16part1())
+    import cProfile, pstats
+    pr=cProfile.Profile()
+    pr.enable()
+    fft( DAY16_SIGNAL )
+    pr.disable()
+    pr.print_stats()
+     
