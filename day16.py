@@ -48,9 +48,13 @@ def fft( signal ):
     response = ''
     length=len(str(signal))
     for p in range(length):
-        pairs_to_multiply=zip( digits_of(signal), pattern_for_phase( p, length ) )
-        multiplied=map( lambda tup: tup[0] * tup[1], pairs_to_multiply )
-        response+=(last_digit( sum( multiplied ) ) )
+        total=0
+        for n, m in zip( digits_of(signal), pattern_for_phase( p, length ) ):
+            if m>0:
+                total+=n
+            elif m<0:
+                total-=n
+        response+=(last_digit( total ) )
     return response
 
 def fftXn( signal,n=100 ):
