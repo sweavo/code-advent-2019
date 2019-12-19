@@ -85,7 +85,7 @@ if __name__ == "__main__":
     import cProfile, pstats
     pr=cProfile.Profile()
     pr.enable()
-    fftXn( DAY16_SIGNAL )
+    fft( prep(DAY16_SIGNAL ))
     pr.disable()
     pr.print_stats()
      
